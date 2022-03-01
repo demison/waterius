@@ -10,9 +10,9 @@
 
 #define NTP_CONNECT_TIMEOUT 3000UL
 
-bool setClock(const char* ntp_server)
+bool setClock(const char* ntp_server1, const char* ntp_server2, const char* ntp_server3)
 {
-	configTime(0, 0, ntp_server);
+	configTime(0, 0, ntp_server1, ntp_server2, ntp_server3);
 
 	LOG_INFO(F("Waiting for NTP time sync: "));
 	uint32_t start = millis();
@@ -28,9 +28,8 @@ bool setClock(const char* ntp_server)
 
 bool setClock() 
 {
-	if (setClock("1.ru.pool.ntp.org") 
-	    || setClock("2.ru.pool.ntp.org")
-	    || setClock("pool.ntp.org")) {
+	//if (setClock("1.ru.pool.ntp.org") || setClock("2.ru.pool.ntp.org") || setClock("pool.ntp.org")) {
+	if (setClock("1.ru.pool.ntp.org","2.ru.pool.ntp.org","pool.ntp.org")) {
 
 		time_t now = time(nullptr);
 		struct tm timeinfo;

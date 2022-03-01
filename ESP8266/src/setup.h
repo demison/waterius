@@ -91,6 +91,7 @@
 
 
 #define ESP_CONNECT_TIMEOUT 15000UL // Время подключения к точке доступа, ms
+#define ESP_FAST_CONNECT_TIMEOUT 3000UL // Время подключения к точке доступа, ms
 
 #define SERVER_TIMEOUT 12000UL // Время ответа сервера, ms
 
