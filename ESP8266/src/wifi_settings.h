@@ -10,9 +10,14 @@
 #define FAKE_CRC 0x0105
 
 /*
+подсчет контрольной суммы
+*/
+uint32_t crc32 (const void* data, size_t length, uint32_t crc = 0xffffffff);
+
+/*
 Сохраняем конфигурацию в EEPROM
 */
-void storeConfig(const Settings &sett);
+void storeConfig(Settings &sett);
 
 /*
 Читаем конфигурацию из EEPROM

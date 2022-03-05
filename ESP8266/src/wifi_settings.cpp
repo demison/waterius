@@ -16,9 +16,30 @@
 #define VALUE(x) VALUE_TO_STRING(x)
 #define VAR_NAME_VALUE(var) #var "="  VALUE(var)
 
-/* Сохраняем конфигурацию в EEPROM */
-void storeConfig(const Settings &sett) 
+uint32_t crc32 (const void* data, size_t length, uint32_t crc /*= 0xffffffff*/)
 {
+    const uint8_t* ldata = (const uint8_t*)data;
+    while (length--)
+    {
+        uint8_t c = *ldata;
+        for (uint32_t i = 0x80; i > 0; i >>= 1)
+        {
+            bool bit = crc & 0x80000000;
+            if (c & i)
+                bit = !bit;
+            crc <<= 1;
+            if (bit)
+                crc ^= 0x04c11db7;
+        }
+        ldata++;
+    }
+    return crc;
+}
+
+/* Сохраняем конфигурацию в EEPROM */
+void storeConfig(Settings &sett) 
+{
+    sett.crc=crc32(&sett, sizeof(sett)-4);
     EEPROM.begin(sizeof(sett));
     EEPROM.put(0, sett);
     
@@ -40,7 +61,7 @@ bool loadConfig(struct Settings &sett)
     EEPROM.get(0, sett);
     EEPROM.end();
 
-    if (sett.crc == FAKE_CRC)  // todo: сделать нормальный crc16
+    if (sett.crc == crc32(&sett, sizeof(sett)-4) || sett.crc==FAKE_CRC)  // todo: сделать нормальный crc16
     {
         LOG_INFO(F("Configuration CRC ok"));
 
